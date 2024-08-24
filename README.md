@@ -13,3 +13,11 @@ The above is a run with no mutations, where the Red plants outcompete the Blue p
 
 The above is a run where both the plants mutate to each other.
 It is interesting to note that regardless of starting conditions, they seem to end up around the same ratio of Blue/Red plants
+
+
+Required resouces:
+All built in python modules
+Colors module
+
+Note:
+Run the code im cmd, **not** in IDLE 
