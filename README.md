@@ -17,7 +17,6 @@ It is interesting to note that regardless of starting conditions, they seem to e
 
 Required resouces:
 All built in python modules
-
 Colors module
 
 Note:
