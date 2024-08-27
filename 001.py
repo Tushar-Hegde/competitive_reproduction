@@ -64,15 +64,29 @@ class Block():
         self.seeds = []
         self.parasites = []
     def select_seed(self):
+        if self.plant.val == 'X' :
+            self.plant.lifetime += 1
+            for x in self.seeds:
+                del x
+            self.seeds = []
+            return self.plant.val
         if self.seeds:
-            self.plant = self.seeds[random.randint(0,len(self.seeds)-1)]
-            self.plant.i,self.plant.j = self.i,self.j
+            if random.randint(0,50)>len(self.seeds):
+                self.plant = self.seeds[random.randint(0,len(self.seeds)-1)]
+                self.plant.i,self.plant.j = self.i,self.j
+            else:
+                self.plant = No_Plant(self.i,self.j)
+
+            #self.plant = self.seeds[random.randint(0,len(self.seeds)-1)]
+            #self.plant.i,self.plant.j = self.i,self.j
+
             for x in self.seeds:
                 del x
             self.seeds = []
         else:
             self.plant = No_Plant(self.i,self.j)
         return self.plant.val
+    
     def place(self,plant_type):
         if plant_type == 2:
             self.plant = Two_Plant(self.i,self.j)
@@ -80,6 +94,8 @@ class Block():
             self.plant = Four_Plant(self.i,self.j)
         elif plant_type == 0:
             self.plant = No_Plant(self.i,self.j)
+        elif plant_type == 'X':
+            self.plant = Parasite_plant(self.i,self.j)
 
 
 class No_Plant():
@@ -175,12 +191,26 @@ class Parasite_plant():
     def __init__(self,i,j):
         self.i,self.j = i,j
         self.val = 'X'
+        self.four_take_percentage = 20
+        self.two_take_percentage = 20
+        self.lifetime = 0   
+        self.lifespan = 3
 
     def printval(self):
         print(green + self.val,end="")
     
     def reproduce(self,matrix):
-        pass
+        l = [matrix.block(self.i,self.j),matrix.block(self.i -1,self.j),matrix.block(self.i + 1, self.j),matrix.block(self.i ,self.j - 1),matrix.block(self.i , self.j + 1)]
+        for x in l:
+            if x:
+                if x.plant.val == '4':
+                    if random.randint(0,99) < self.four_take_percentage :
+                        x.plant = Parasite_plant(x.i,x.j)
+                elif x.plant.val == '2':
+                    if random.randint(0,99) < self.two_take_percentage :
+                        x.plant = Parasite_plant(x.i,x.j)
+        if self.lifetime >= self.lifespan :
+            matrix.block(self.i,self.j).plant = No_Plant(self.i,self.j)
 
 
 mutations_4_to_2 = 0
@@ -192,14 +222,25 @@ a.block(22,53).place(4)
 a.block(3,2).place(2)
 a.block(30,48).place(2)
 a.block(5,7).place(4)
+a.block(5,8).place('X')
 a.block(2,118).place(2)
 a.block(4,117).place(2)
 a.block(7,120).place(2)
 
+
+
+'''
 for i in range(1,31):
     for j in range(1,121):
         a.block(i,j).place(2)
+'''
 
+
+a.display()
+a.perc()
+print(white + f"No of 4 to 2 mutations: {mutations_4_to_2}")
+print(white + f"No of 2 to 4 mutations: {mutations_2_to_4}")
+i = input()
 
 while True:
     a.run()
